@@ -12,8 +12,8 @@ describe('GoRest API', () => {
   beforeAll(() => p.reporter.add(rep));
   afterAll(() => p.reporter.end());
 
-  describe('Get user dynamically', () => {
-    it('should get first user and validate by id', async () => {
+  describe('Pegar User válido', () => {
+    it('deve pegar o primeiro usuário retornado', async () => {
       const usersResponse = await p
         .spec()
         .get(`${baseUrl}/users`)
