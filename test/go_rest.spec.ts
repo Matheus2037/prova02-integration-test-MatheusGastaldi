@@ -30,11 +30,11 @@ describe('GoRest API', () => {
       id = firstUser.id;
       name = firstUser.name;
       email = firstUser.email
-    });
+  });
 
   afterAll(() => p.reporter.end());
 
-  describe('Get User by Id ', () => {
+  describe('Get Usuário pelo Id ', () => {
     it('deve pegar o usuário pelo ID', async () => {
       await p
         .spec()
@@ -48,8 +48,8 @@ describe('GoRest API', () => {
     });
   });
 
-  describe('Get por ID não existente', () => {
-    it('deve tentar pegar um usuário por Id inválido', async () => {
+  describe('Get de User com ID não existente', () => {
+    it('deve tentar pegar um usuário com Id inválido', async () => {
       await p
         .spec()
         .get(`${baseUrl}/users/999999999999`)
@@ -147,7 +147,7 @@ describe('GoRest API', () => {
     });
   });
 
-  describe('Editar user com campo inválido no PUT', () => {
+  describe('Editar User com campo inválido no PUT', () => {
     it('deve tentar editar um user com campo de email inválido', async () => {
       await p
       .spec()
@@ -188,6 +188,5 @@ describe('GoRest API', () => {
       .expectStatus(StatusCodes.NOT_FOUND)
     });
   });
-
 
 });
