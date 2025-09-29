@@ -8,6 +8,7 @@ describe('GoRest API', () => {
   const p = pactum;
   const rep = SimpleReporter;
   const token = 'f51127df7b2c27e91c36f302e46047b4363b9e1450c8e1d6e554f4e5ae4bd9ae';
+  const invalidToken = '7b2c27e91c36f302e46047b4363b9e1450c8e1d6e554f4e5ae4bd9ae';
 
   let id;
   let name;
@@ -90,4 +91,47 @@ describe('GoRest API', () => {
       .expectBodyContains('has already been taken')
     });
   });
+
+  describe('Token Invalido ao cadastrar usuário', () => {
+    it('deve tentar cadastrar um usuário com token invalido', async () => {
+      await p
+      .spec()
+      .post(`${baseUrl}/users`)
+      .withBearerToken(invalidToken)
+      .withJson({
+        name: faker.person.firstName(),
+        email: faker.internet.email(),
+        gender: 'male',
+        status: 'active'
+      })
+      .expectStatus(StatusCodes.UNAUTHORIZED)
+      .expectBodyContains("Invalid token")
+    });
+  });
+
+  describe('Teste para editar email e nome com o PUT', () => {
+    it('deve tentar editar um usuário com PUT', async () => {
+      await p
+      .spec()
+      .put(`${baseUrl}/users/${id}`)
+      .withBearerToken(token)
+      .withJson({
+        name: faker.person.firstName(),
+        email: faker.internet.email()
+      })
+      .expectStatus(StatusCodes.OK)
+    });
+  });
+
+  describe('Deletar registro de usuário', () => {
+    it('deve tentar deletar o registro de um usuário', async () => {
+      await p
+      .spec()
+      .delete(`${baseUrl}/users/${id}`)
+      .withBearerToken(token)
+      .expectStatus(StatusCodes.NO_CONTENT)
+    });
+  });
+
+
 });
