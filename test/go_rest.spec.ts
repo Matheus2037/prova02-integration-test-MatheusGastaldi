@@ -109,6 +109,30 @@ describe('GoRest API', () => {
     });
   });
 
+  describe('Cadastro de user com campo inválido', () => {
+    it('deve tentar cadastrar um usuário email inválido', async () => {
+      await p
+      .spec()
+      .post(`${baseUrl}/users`)
+      .withBearerToken(token)
+      .withJson({
+        name: faker.person.firstName(),
+        email: 'issonaoehemail',
+        gender: 'male',
+        status: 'active'
+      })
+      .expectStatus(StatusCodes.UNPROCESSABLE_ENTITY)
+      .expectBody(
+        [
+          {
+            "field": "email",
+            "message": "is invalid"
+          }
+        ]
+      )
+    });
+  });
+
   describe('Teste para editar email e nome com o PUT', () => {
     it('deve tentar editar um usuário com PUT', async () => {
       await p
@@ -123,6 +147,28 @@ describe('GoRest API', () => {
     });
   });
 
+  describe('Editar user com campo inválido no PUT', () => {
+    it('deve tentar editar um user com campo de email inválido', async () => {
+      await p
+      .spec()
+      .put(`${baseUrl}/users/${id}`)
+      .withBearerToken(token)
+      .withJson({
+        name: faker.person.firstName(),
+        email: 'issonaoehemail',
+      })
+      .expectStatus(StatusCodes.UNPROCESSABLE_ENTITY)
+      .expectBody(
+        [
+          {
+            "field": "email",
+            "message": "is invalid"
+          }
+        ]
+      )
+    });
+  });
+
   describe('Deletar registro de usuário', () => {
     it('deve tentar deletar o registro de um usuário', async () => {
       await p
@@ -130,6 +176,16 @@ describe('GoRest API', () => {
       .delete(`${baseUrl}/users/${id}`)
       .withBearerToken(token)
       .expectStatus(StatusCodes.NO_CONTENT)
+    });
+  });
+
+  describe('Tentar deletar usuário não existente', () => {
+    it('deve tentar deletar o registro com id não existente', async () => {
+      await p
+      .spec()
+      .delete(`${baseUrl}/users/${id}123456`)
+      .withBearerToken(token)
+      .expectStatus(StatusCodes.NOT_FOUND)
     });
   });
 
