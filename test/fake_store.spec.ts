@@ -2,7 +2,7 @@ import pactum from 'pactum';
 import { SimpleReporter } from '../simple-reporter';
 import { StatusCodes } from 'http-status-codes';
 
-describe('Fake Store API', () => {
+describe('GoRest API', () => {
   const baseUrl = 'https://gorest.co.in/public/v2';
   const p = pactum;
   const rep = SimpleReporter;
@@ -12,14 +12,28 @@ describe('Fake Store API', () => {
   beforeAll(() => p.reporter.add(rep));
   afterAll(() => p.reporter.end());
 
+  describe('Get user dynamically', () => {
+    it('should get first user and validate by id', async () => {
+      const usersResponse = await p
+        .spec()
+        .get(`${baseUrl}/users`)
+        .expectStatus(StatusCodes.OK)
+        .returns("res.body");
 
-  describe('Get Booker By ID', () => {
-    it('Product', async () => {
+      expect(usersResponse.length).toBeGreaterThan(0);
+
+      const firstUser = usersResponse[0];
+      const { id, name } = firstUser;
+
       await p
         .spec()
-        .get(`${baseUrl}/users/7440571`)
+        .get(`${baseUrl}/users/${id}`)
         .expectStatus(StatusCodes.OK)
-        .expectBodyContains("Amrit Gowda")
+        .expectBodyContains(name)
+        .expectJsonLike({
+          id: id,
+          name: name
+        });
     });
   });
 });
